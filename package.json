@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "the project number 2 from Hexlet",
   "bin": {
-    "gendiff": "bin/gendiff.js"
+    "genDiff": "bin/genDiff.js"
   },
   "type": "module",
   "main": "index.js",
@@ -21,6 +21,10 @@
   },
   "homepage": "https://github.com/YaAleksey/frontend-project-lvl2#readme",
   "dependencies": {
-    "commander": "^6.1.0"
+    "commander": "^6.1.0",
+    "lodash": "^4.17.20"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
   }
 }
