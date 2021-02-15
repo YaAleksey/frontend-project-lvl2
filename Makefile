@@ -3,3 +3,6 @@ publish:
 
 addCommit:
 	git add --all
+
+lint:
+	npx eslint .   

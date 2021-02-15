@@ -1,42 +1,47 @@
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path';
 import _ from 'lodash';
 import fs from 'fs';
 
- const textFileOne = JSON.parse(fs.readFileSync('/home/aleksey/frontend-project-lvl2/src/file1.json'), "utf-8");
-  const keysValuesFileOne = Object.entries(textFileOne);
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const getFixturePath = (fileName) => path.join(__dirname, '..', 'src', fileName);
+  const readFile = (fileName) => JSON.parse(fs.readFileSync(getFixturePath(fileName), 'utf-8'));
 
-  const textFileTwo = JSON.parse(fs.readFileSync('/home/aleksey/frontend-project-lvl2/src/file2.json'), "utf-8");
-  const keysValuesFileTwo = Object.entries(textFileTwo);
+  const textFileOne = readFile('file1.json');
+  const textFileTwo = readFile('file2.json');  
 
-const iteratingFirstToSecond = (arrayKeysValueFirst, objSecondFile) => {
-  const afterIterating = {};
-  arrayKeysValueFirst.map(([key, value]) => {
-    if (!(_.has(objSecondFile, key))) {
-      return afterIterating[`- ${key}`] = value;
+  const keysFileOne = Object.keys(textFileOne);
+  const keysFileTwo = Object.keys(textFileTwo);
+  const uniqueKeysBothFiles = (_.union([...keysFileTwo, ...keysFileOne])).sort();
+
+  const genDiff = (uniqueKeysBothFiles) => uniqueKeysBothFiles
+    .reduce((acc, key) => {
+    if (textFileOne[key] === textFileTwo[key]) {
+      acc.push(`  ${key}: ${textFileTwo[key]}`);
+        return acc;
     }
-    if (objSecondFile[key] === value) {
-      return afterIterating[key] = value;
-    }
-    if (objSecondFile[key] !== value) {
-      afterIterating[`- ${key}`] = value;
-      afterIterating[`+ ${key}`] = objSecondFile[key];
-      return afterIterating;
-    }
-  })
-  return afterIterating;
-};
 
-export const iteratingSecondToFirst = (arrayKeysValueFirst, arrayKeysValueSecond, objFirstFile, objSecondFile) => {
-  const finalResult = iteratingFirstToSecond(arrayKeysValueFirst, objSecondFile);
-  arrayKeysValueSecond.map(([key, value]) => {
-    if (!(_.has(objFirstFile, key))) {
-      return finalResult[`+ ${key}`] = value; 
+    if (!(_.has(textFileOne, key)) && _.has(textFileTwo, key)) {
+      acc.push(`+ ${key}: ${textFileTwo[key]}`);
+        return acc;
     }
-  })
-//  console.log(finalResult);
-  return finalResult;
-};
 
-export const byExport = () => {
- return iteratingSecondToFirst(keysValuesFileOne, keysValuesFileTwo, textFileOne, textFileTwo);
-};
+    if (_.has(textFileOne, key) && !(_.has(textFileTwo, key))) {
+      acc.push(`- ${key}: ${textFileOne[key]}`);
+        return acc;
+    }
+    
+    if (_.has(textFileOne, key) && _.has(textFileTwo, key)) {
+      acc.push(`- ${key}: ${textFileOne[key]}`);
+      acc.push(`+ ${key}: ${textFileTwo[key]}`);
+        return acc;
+    }
 
+    return acc;
+  }, []);
+
+  export const byExport = () => {
+    console.log((genDiff(uniqueKeysBothFiles)).join());
+  };
