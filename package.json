@@ -6,6 +6,11 @@
     "genDiff": "bin/genDiff.js"
   },
   "type": "module",
+  "jest": {
+    "testEnvironment": "node",
+    "transformIgnorePatterns": [],
+    "transform": {}
+  },
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,6 +26,7 @@
   },
   "homepage": "https://github.com/YaAleksey/frontend-project-lvl2#readme",
   "dependencies": {
+    "@jest/globals": "^26.6.2",
     "commander": "^6.1.0",
     "lodash": "^4.17.20"
   },
