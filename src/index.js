@@ -1,6 +1,5 @@
-import readFile from './utils.js';
 import _ from 'lodash';
-
+import readFile from './utils.js';
 
 const genDiff = (fileNameOne, fileNameTwo) => {
   const objFromFileOne = JSON.parse(readFile(fileNameOne));
