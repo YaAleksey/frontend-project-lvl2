@@ -33,7 +33,11 @@ jobs:
     - name: Run linter
       run: |
         make lint
-    - name: Run test
-      run: |
-        make test
+    - name: Test & publish code coverage
+      uses: paambaati/codeclimate-action@v2.7.4
+      env:
+        33e71e645415d7c0c1621ad7d79c8363b42dfc08d922f3efe94b8b102012bf75: ${{secrets.33e71e645415d7c0c1621ad7d79c8363b42dfc08d922f3efe94b8b102012bf75}}
+      with:
+        coverageCommand: make test-coverage
+        debug: true
   
