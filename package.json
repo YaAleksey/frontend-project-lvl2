@@ -12,8 +12,8 @@
     "transform": {}
   },
   "main": "index.js",
-  "scripts": {
-    "test": "jest"
+  "scripts":{
+    "test": "npx jest"
   },
   "repository": {
     "type": "git",
