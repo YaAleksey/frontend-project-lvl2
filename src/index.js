@@ -1,41 +1,19 @@
 import _ from 'lodash';
-import readFile from './utils.js';
+import compareFiles from './logic/logicForCompare.js';
+import parsingFile from './chooseParser.js';
 
-const genDiff = (fileNameOne, fileNameTwo) => {
-  const objFromFileOne = JSON.parse(readFile(fileNameOne));
+const genDiff = (file1, file2) => {
+  const objFromFileOne = parsingFile(file1);
+  const objFromFileTwo = parsingFile(file2);
+
   const keysFileOne = Object.keys(objFromFileOne);
-
-  const objFromFileTwo = JSON.parse(readFile(fileNameTwo));
   const keysFileTwo = Object.keys(objFromFileTwo);
 
-  const uniqueKeysBothFiles = (_.union([...keysFileTwo, ...keysFileOne])).sort();
+  const uniqueKeys = (_.union([...keysFileTwo, ...keysFileOne])).sort();
 
-  let result = uniqueKeysBothFiles.reduce((acc, key) => {
-    if (objFromFileOne[key] === objFromFileTwo[key]) {
-      acc.push(`  ${key}: ${objFromFileTwo[key]}`);
-      return acc;
-    }
+  const genResult = compareFiles(objFromFileOne, objFromFileTwo, uniqueKeys);
 
-    if (!(_.has(objFromFileOne, key)) && _.has(objFromFileTwo, key)) {
-      acc.push(`+ ${key}: ${objFromFileTwo[key]}`);
-      return acc;
-    }
-
-    if (_.has(objFromFileOne, key) && !(_.has(objFromFileTwo, key))) {
-      acc.push(`- ${key}: ${objFromFileOne[key]}`);
-      return acc;
-    }
-
-    if (_.has(objFromFileOne, key) && _.has(objFromFileTwo, key)) {
-      acc.push(`- ${key}: ${objFromFileOne[key]}`);
-      acc.push(`+ ${key}: ${objFromFileTwo[key]}`);
-      return acc;
-    }
-    return acc;
-  }, []);
-
-  result = `{\n  ${result.join('\n  ')}\n}`;
-  return result;
+  return `{\n  ${genResult.join('\n  ')}\n}`;
 };
 
 export default genDiff;

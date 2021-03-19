@@ -12,7 +12,7 @@
     "transform": {}
   },
   "main": "index.js",
-  "scripts":{
+  "scripts": {
     "test": "npx jest"
   },
   "repository": {
@@ -28,6 +28,7 @@
   "dependencies": {
     "@jest/globals": "^26.6.2",
     "commander": "^6.1.0",
+    "js-yaml": "^4.0.0",
     "lodash": "^4.17.20"
   },
   "devDependencies": {
