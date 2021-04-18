@@ -2,9 +2,9 @@ import _ from 'lodash';
 import parsingFile from './chooseParser.js';
 import genUniqueKeys from './genUniqueKeys.js';
 
-const genObjForTree = (obj1, obj2, key, depth = 2) => {
+const genObjForTree = (obj1, obj2, key, depth) => {
 
-  if (obj1[key] === obj2[key]) {
+  if (_.isEqual(obj1, obj2)) {
       return {
         "key": key, "value": obj1[key], "status": "unchanged", "depth": depth,
       };
@@ -22,40 +22,31 @@ const genObjForTree = (obj1, obj2, key, depth = 2) => {
       };
   }
 
-  if (obj1[key] !== obj2[key]) {
-    if (!(typeof obj1[key] === 'object' && typeof obj2[key] === 'object')
-    || (Array.isArray(obj1[key]) || Array.isArray(obj2[key]))) {
-       
-      return {
-        "key": key, "oldValue": obj1[key], "status": "modified", "depth": depth,
-        "newValue": obj2[key],
-      };
-    }
+  if (!(_.isObject(obj1[key]) && _.isObject(obj2[key])) || (Array.isArray(obj1[key]) || Array.isArray(obj2[key]))) {
 
     return {
-        "key": key, "value": "nested", "status": "changed", "depth": 2,
-        "children": (makeTree(obj1[key], obj2[key])),
-      };
+      "key": key, "oldValue": obj1[key], "status": "modified", "depth": depth,
+      "newValue": obj2[key],
+    };
   }
+
+  return {
+    "key": key, "value": "nested", "status": "changed", "depth": 2,
+    "children": (makeTree(obj1[key], obj2[key], depth + 2)),
+  };
 };
 
-const makeTree = (obj1, obj2) => {
+const makeTree = (obj1, obj2, depth = 2) => {
   const uniqueKeys = _.uniq([...Object.keys(obj1), ...Object.keys(obj2)]);
   let counter = [];
 
-  if (uniqueKeys.length === 1) {
-    counter.push(genObjForTree(obj1, obj2, uniqueKeys[0]));
-
-    return counter;
-  }
-
   counter = uniqueKeys.reduce((acc, key) => {
-    acc.push(genObjForTree(obj1, obj2, key));
+    acc.push(genObjForTree(obj1, obj2, key, depth));
 
     return acc;
   }, [])
 
-return counter; // поработать с depth, как ее сумировать при погружении!
+  return counter;
 };
 
 const genDiff = (file1, file2) => {
