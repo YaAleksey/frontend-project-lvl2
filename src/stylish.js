@@ -65,7 +65,6 @@ const treeInStr = (tree) => {
           }
           return [`${currentIndent}- ${currentObj.key}: ${currentObj.oldValue}`,
             `${currentIndent}+ ${currentObj.key}: ${currentObj.newValue}`].join('\n');
-          i;
         }
       }
       // console.log(currentObj, depth);

@@ -2,37 +2,36 @@ import _ from 'lodash';
 import parsingFile from './chooseParser.js';
 import treeInStr from './stylish.js';
 
-const genObjForTree = (obj1, obj2, key) => {
-  if (obj1[key] === obj2[key]) {
-    return { key, value: obj1[key], status: 'unchanged' };
-  }
-
-  if (_.has(obj1, key) && (!(_.has(obj2, key)))) {
-    return { key, value: obj1[key], status: 'deleted' };
-  }
-
-  if (_.has(obj2, key) && (!(_.has(obj1, key)))) {
-    return { key, value: obj2[key], status: 'added' };
-  }
-
-  if (!(_.isObject(obj1[key]) && _.isObject(obj2[key])) || (Array.isArray(obj1[key]) || Array.isArray(obj2[key]))) {
-    return {
-      key, oldValue: obj1[key], status: 'modified', newValue: obj2[key],
-    };
-  }
-
-  return {
-    key, value: 'nested', status: 'changed', children: (makeTree(obj1[key], obj2[key])),
-  };
-};
-
-const makeTree = (obj1, obj2) => {
+const genObjForTree = (obj1, obj2) => {
   const uniqueKeys = (_.uniq([...Object.keys(obj1), ...Object.keys(obj2)])).sort();
-  let counter = [];
 
-  counter = uniqueKeys.reduce((acc, key) => {
-    acc.push(genObjForTree(obj1, obj2, key));
+  const counter = uniqueKeys.reduce((acc, key) => {
+    if (obj1[key] === obj2[key]) {
+      acc.push({ key, value: obj1[key], status: 'unchanged' });
+      return acc;
+    }
 
+    if (_.has(obj1, key) && (!(_.has(obj2, key)))) {
+      acc.push({ key, value: obj1[key], status: 'deleted' });
+      return acc;
+    }
+
+    if (_.has(obj2, key) && (!(_.has(obj1, key)))) {
+      acc.push({ key, value: obj2[key], status: 'added' });
+      return acc;
+    }
+
+    if (!(_.isObject(obj1[key]) && _.isObject(obj2[key]))
+    || (Array.isArray(obj1[key]) || Array.isArray(obj2[key]))) {
+      acc.push({
+        key, oldValue: obj1[key], status: 'modified', newValue: obj2[key],
+      });
+      return acc;
+    }
+
+    acc.push({
+      key, value: 'nested', status: 'changed', children: (genObjForTree(obj1[key], obj2[key])),
+    });
     return acc;
   }, []);
 
@@ -42,8 +41,8 @@ const makeTree = (obj1, obj2) => {
 const genDiff = (file1, file2) => {
   const firstObj = parsingFile(file1);
   const secondObj = parsingFile(file2);
-  const genTree = makeTree(firstObj, secondObj);
-  //  return genTree[3].value;
+  const genTree = genObjForTree(firstObj, secondObj);
+
   return treeInStr(genTree);
 };
 
