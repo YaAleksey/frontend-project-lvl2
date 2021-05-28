@@ -6,15 +6,11 @@ const treeInStr = (tree) => {
   const indentForSymb = 2;
 
   const extractObj = (valLikeObj, extrDepth) => {
-    // const extrIndent = replacer.repeat(spacesCount * extrDepth);
     const extrSpacesCount = 1;
     const extrIndent = replacer.repeat(extrDepth + extrSpacesCount);
-    // console.log(valLikeObj, extrDepth + extrSpacesCount);
-    //    const closeExtrBr = replacer.repeat(spacesCount + extrDepth + indentForSymb);
 
     const getKeyVal = Object.entries(valLikeObj);
     const result = getKeyVal.map(([key, val]) => {
-      // console.log(key, extrDepth);
       if (typeof val !== 'object') {
         return `${extrIndent}${key}: ${val}`;
       }
@@ -28,7 +24,6 @@ const treeInStr = (tree) => {
       const currentIndent = replacer.repeat(depth + spacesCount);
       const closeBrecket = replacer.repeat(depth + spacesCount + indentForSymb);
 
-      // console.log(currentObj.key, depth);
       if (!(_.has(currentObj, 'children'))) {
         if (currentObj.status === 'deleted') {
           if (typeof currentObj.value !== 'object' || currentObj.value === null) {
@@ -61,13 +56,12 @@ const treeInStr = (tree) => {
             return [`${currentIndent}- ${currentObj.key}: {\n${extractObj(currentObj.oldValue, depth + 6)}\n${closeBrecket}}`, `${currentIndent}+ ${currentObj.key}: ${currentObj.newValue}`].join('\n');
           }
           if (typeof currentObj.newValue === 'object' && currentObj.newValue !== null) {
-            return [`${currentIndent}- ${currentObj.key}: {/n${currentIndent}${currentObj.oldValue}\n${closeBrecket}`, `${currentIndent}+ {\n${currentObj.key}: ${extractObj(currentObj.newValue, depth + 6)}\n${closeBrecket}}`].join('\n');
+            return [`${currentIndent}- ${currentObj.key}: ${currentObj.oldValue}`, `${currentIndent}+ ${currentObj.key}: {\n${extractObj(currentObj.newValue, depth + 6)}\n${closeBrecket}}`].join('\n');
           }
           return [`${currentIndent}- ${currentObj.key}: ${currentObj.oldValue}`,
             `${currentIndent}+ ${currentObj.key}: ${currentObj.newValue}`].join('\n');
         }
       }
-      // console.log(currentObj, depth);
       return `${currentIndent}  ${currentObj.key}: {\n${currentObj.children.map((child) => iter(child, depth + 4)).join('\n')}\n${closeBrecket}}`;
     };
     return iter(difference, 1);

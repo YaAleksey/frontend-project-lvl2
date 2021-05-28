@@ -7,6 +7,7 @@ const readYamlFile = (fileName) => {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
   const getFile = path.join(__dirname, '..', '__tests__', '__fixtures__', fileName);
+
   return yaml.load(fs.readFileSync(getFile, 'utf-8'));
 };
 

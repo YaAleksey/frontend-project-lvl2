@@ -28,7 +28,6 @@ const genObjForTree = (obj1, obj2) => {
       });
       return acc;
     }
-
     acc.push({
       key, value: 'nested', status: 'changed', children: (genObjForTree(obj1[key], obj2[key])),
     });
