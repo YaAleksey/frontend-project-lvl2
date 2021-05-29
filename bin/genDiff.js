@@ -4,11 +4,13 @@ import genDiff from '../src/index.js';
 
 const { program } = pkg;
 
+//console.log(program.opts());
+
 program
 //  .arguments('<filepath1> <filepath2>')
   .description('Compares two configuration files and shows a difference.')
-  .program.version('0.0.1')
-  .option('-f, --format [type]', 'output format');
+  .version('0.0.1')
+  .option('-f, --format [type]', 'output format', 'stylish');
 
 //  .command('start <arg>')
 
