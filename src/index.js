@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import parsingFile from './chooseParser.js';
 import treeInStr from './stylish.js';
+import connectionFilesInOutput from './plain.js';
 
 const genObjForTree = (obj1, obj2) => {
   const uniqueKeys = (_.uniq([...Object.keys(obj1), ...Object.keys(obj2)])).sort();
@@ -42,7 +43,8 @@ const genDiff = (file1, file2) => {
   const secondObj = parsingFile(file2);
   const genTree = genObjForTree(firstObj, secondObj);
 
-  return treeInStr(genTree);
+//  return treeInStr(genTree);
+  return connectionFilesInOutput(genTree);
 };
 
 export default genDiff;
