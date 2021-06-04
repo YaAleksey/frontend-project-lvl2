@@ -44,7 +44,11 @@ const genDiff = (file1, file2) => {
   const genTree = genObjForTree(firstObj, secondObj);
 
 //  return treeInStr(genTree);
-  return connectionFilesInOutput(genTree);
+//  return connectionFilesInOutput(genTree);
+  console.log(typeof genTree);
+  const treeInJson = JSON.stringify(genTree);
+  console.log(typeof treeInJson);
+  return treeInJson;
 };
 
 export default genDiff;
