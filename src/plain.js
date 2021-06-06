@@ -6,66 +6,46 @@ const connectionFilesInOutput = (tree) => {
     if (typeof valueForCheck === 'object' && !Array.isArray(valueForCheck) && valueForCheck !== null) {
       return `[complex value]`;
     }
+    if (typeof valueForCheck === 'string') {
+      return `'${valueForCheck}'`;
+    }
     return `${valueForCheck}`;
   };
 
-  const output = (tree) => {
-    return tree.map((currentLevel) => {
-    const propLevelFirst = [currentLevel.key];
-
-    const iter = (children, propPreviousLevel) => {
-      const result = children.map((child) => {
-//console.log(propPreviousLevel);
-        const propForChild = _.cloneDeep(propPreviousLevel);
-console.log(propForChild);
-        propForChild.push(child.key);
-//console.log(propForChild);
-
-        if (child.status === 'unchanged') {
+    const iter = (node, propPreviousLevel) => {
+      if (node.status === 'unchanged') {
           return '';
+       }
+
+      if (!(_.has(node, 'children'))) {
+
+        if (node.status === 'deleted') {
+          return `Property '${propPreviousLevel.join('.')}' was removed`;
         }
 
-        if (!(_.has(child, 'children'))) {
-
-          if (child.status === 'deleted') {
-            return `Property '${propForChild.join('.')}' was removed`;
-          }
-
-          if (child.status === 'added') {
-            return `Property '${propForChild.join('.')}' was added with value: ${checkForObj(child.value)}`;
-          }
-
-          return `Property '${propForChild.join('.')}' was update. From ${checkForObj(child.oldValue)} to ${checkForObj(child.newValue)}`;
+        if (node.status === 'added') {
+          return `Property '${propPreviousLevel.join('.')}' was added with value: ${checkForObj(node.value)}`;
         }
 
-        return iter(child.children, propForChild);
+        return `Property '${propPreviousLevel.join('.')}' was updated. From ${checkForObj(node.oldValue)} to ${checkForObj(node.newValue)}`;
+      }
+
+      return  node.children.map((child) => {
+        const propForChild = propPreviousLevel.slice(0);
+        propForChild.push(child.key);
+
+        return iter(child, propForChild);
       });
-      return result;
     };
-
-      if (currentLevel.status === 'unchanged') {
-        return '';
-      };
-
-      if (!(_.has(currentLevel, 'children'))) {
-        if (currentLevel.status === 'deleted') {
-          return `Property '${propLevelFirst}' was removed`;
-        }
-
-        if (currentLevel.status === 'added') {
-          return `Property '${propLevelFirst}' was added with value: ${checkForObj(currentLevel.value)}`;
-        }
-
-        if (currentLevel.status === 'modified') {
-          return `Property '${propLevelFirst}' was update. From ${checkForObj(currentLevel.oldValue)} to ${checkForObj(currentLevel.newValue)}`;
-        }
-      };
       
-      return iter (currentLevel.children, propForChild);
-    });
-  };
+  let result = tree.map((objFromFirstLvl) => {
+    const propFromFirstLvl = objFromFirstLvl.key;
 
-  return output(tree);
+    return iter(objFromFirstLvl, [propFromFirstLvl]);
+  });
+  result = _.flattenDeep(result);
+  return _.compact(result).join('\n');
 };
+
 
 export default connectionFilesInOutput;

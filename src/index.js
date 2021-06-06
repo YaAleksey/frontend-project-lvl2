@@ -4,7 +4,8 @@ import treeInStr from './stylish.js';
 import connectionFilesInOutput from './plain.js';
 
 const genObjForTree = (obj1, obj2) => {
-  const uniqueKeys = (_.uniq([...Object.keys(obj1), ...Object.keys(obj2)])).sort();
+  const uniqueKeys = _.sortBy(_.uniq([...Object.keys(obj1), ...Object.keys(obj2)]));
+//  uniqueKeys = _.sortBy(uniqueKeys,[function]);
 
   const counter = uniqueKeys.reduce((acc, key) => {
     if (obj1[key] === obj2[key]) {
@@ -32,7 +33,7 @@ const genObjForTree = (obj1, obj2) => {
     acc.push({
       key, value: 'nested', status: 'changed', children: (genObjForTree(obj1[key], obj2[key])),
     });
-    return acc;
+    return _.sortBy(acc, ['key']);
   }, []);
 
   return counter;
@@ -43,12 +44,9 @@ const genDiff = (file1, file2) => {
   const secondObj = parsingFile(file2);
   const genTree = genObjForTree(firstObj, secondObj);
 
-//  return treeInStr(genTree);
-//  return connectionFilesInOutput(genTree);
-  console.log(typeof genTree);
-  const treeInJson = JSON.stringify(genTree);
-  console.log(typeof treeInJson);
-  return treeInJson;
+  return connectionFilesInOutput(genTree); // for plain
+//  return treeInStr(genTree); // for stylish
+//  return JSON.stringify(genTree, " ", 3); // for json
 };
 
 export default genDiff;
