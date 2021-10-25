@@ -4,20 +4,15 @@ import genDiff from '../src/index.js';
 
 const { program } = pkg;
 
-//console.log(program.opts());
-
 program
-//  .arguments('<filepath1> <filepath2>')
   .description('Compares two configuration files and shows a difference.')
   .version('0.0.1')
-  .option('-f, --format [type]', 'output format', 'stylish');
+  .option('-f, --format [type]', 'output format', 'stylish')
+  .arguments('<first> <second>')
 
-//  .command('start <arg>')
+  .action((first, second) => {
+    const diff = genDiff(first, second, program.format);
+    console.log(diff);
+  });
 
-//  .action((arg) => {
-//    console.log(arg);
-//  });
-
-program.parse(process.argv);
-
-console.log(genDiff(process.argv[2], process.argv[3]));
+program.parse();

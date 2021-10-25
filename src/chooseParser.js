@@ -1,6 +1,6 @@
 import path from 'path';
-import readFile from './readFile.js';
 import yaml from 'js-yaml';
+import readFile from './readFile.js';
 
 const parsingFile = (fileName) => {
   const format = path.extname(fileName);

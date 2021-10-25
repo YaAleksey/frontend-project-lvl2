@@ -1,11 +1,9 @@
 import _ from 'lodash';
 import parsingFile from './chooseParser.js';
-import treeInStr from './stylish.js';
-import connectionFilesInOutput from './plain.js';
+import format from './formatters/formattersList.js';
 
-const genObjForTree = (obj1, obj2) => {
+const genTree = (obj1, obj2) => {
   const uniqueKeys = _.sortBy(_.uniq([...Object.keys(obj1), ...Object.keys(obj2)]));
-//  uniqueKeys = _.sortBy(uniqueKeys,[function]);
 
   const counter = uniqueKeys.reduce((acc, key) => {
     if (obj1[key] === obj2[key]) {
@@ -31,7 +29,7 @@ const genObjForTree = (obj1, obj2) => {
       return acc;
     }
     acc.push({
-      key, value: 'nested', status: 'changed', children: (genObjForTree(obj1[key], obj2[key])),
+      key, value: 'nested', status: 'changed', children: (genTree(obj1[key], obj2[key])),
     });
     return _.sortBy(acc, ['key']);
   }, []);
@@ -39,14 +37,12 @@ const genObjForTree = (obj1, obj2) => {
   return counter;
 };
 
-const genDiff = (file1, file2) => {
+const genDiff = (file1, file2, formatName) => {
   const firstObj = parsingFile(file1);
   const secondObj = parsingFile(file2);
-  const genTree = genObjForTree(firstObj, secondObj);
+  const diff = genTree(firstObj, secondObj);
 
-//  return connectionFilesInOutput(genTree); // for plain
-  return treeInStr(genTree); // for stylish
-//  return JSON.stringify(genTree, " ", 3); // for json
+  return format(formatName)(diff);
 };
 
 export default genDiff;
