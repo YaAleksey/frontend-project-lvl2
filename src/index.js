@@ -1,6 +1,8 @@
 import _ from 'lodash';
+import objectOrNot from './objectOrNot.js';
 import parsingFile from './chooseParser.js';
 import format from './formatters/formattersList.js';
+
 
 const genTree = (obj1, obj2) => {
   const uniqueKeys = _.sortBy(_.uniq([...Object.keys(obj1), ...Object.keys(obj2)]));
@@ -21,8 +23,7 @@ const genTree = (obj1, obj2) => {
       return acc;
     }
 
-    if (!(_.isObject(obj1[key]) && _.isObject(obj2[key]))
-    || (Array.isArray(obj1[key]) || Array.isArray(obj2[key]))) {
+    if (!(objectOrNot(obj1[key]) && (objectOrNot(obj2[key])))) {
       acc.push({
         key, oldValue: obj1[key], status: 'modified', newValue: obj2[key],
       });
