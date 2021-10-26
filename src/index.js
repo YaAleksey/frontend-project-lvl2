@@ -24,14 +24,10 @@ const genTree = (obj1, obj2) => {
     }
 
     if (!(objectOrNot(obj1[key]) && (objectOrNot(obj2[key])))) {
-      acc.push({
-        key, oldValue: obj1[key], status: 'modified', newValue: obj2[key],
-      });
+      acc.push({key, oldValue: obj1[key], status: 'modified', newValue: obj2[key]});
       return acc;
     }
-    acc.push({
-      key, value: 'nested', status: 'changed', children: (genTree(obj1[key], obj2[key])),
-    });
+    acc.push({key, value: 'nested', status: 'changed', children: (genTree(obj1[key], obj2[key]))});
     return _.sortBy(acc, ['key']);
   }, []);
 
