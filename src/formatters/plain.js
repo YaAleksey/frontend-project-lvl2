@@ -33,4 +33,3 @@ const plain = (tree, way = []) => {
 };
 
 export default plain;
-
