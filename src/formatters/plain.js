@@ -1,48 +1,36 @@
-import _ from 'lodash';
+import objectOrNot from '../objectOrNot.js';
 
-const plain = (tree) => {
-  const checkForObj = (valueForCheck) => {
-    if (typeof valueForCheck === 'object' && !Array.isArray(valueForCheck) && valueForCheck !== null) {
-      return '[complex value]';
+const complexValOrNot = (val) => {
+  if (typeof val === 'string') {
+    return `'${val}'`;
+  }
+  return objectOrNot(val) ? '[complex value]' : val;
+};
+
+const plain = (tree, way = []) => {
+  const result = tree.map((node) => {
+    const currentWay = [way, node.key].flat().join('.');
+
+    switch (node.status) {
+      case 'deleted':
+        return `Property '${currentWay}' was removed`;
+
+      case 'unchanged':
+        return null;
+
+      case 'added':
+        return `Property '${currentWay}' was added with value: ${complexValOrNot(node.value)}`;
+
+      case 'modified':
+        return `Property '${currentWay}' was updated. From ${complexValOrNot(node.oldValue)} to ${complexValOrNot(node.newValue)}`;
+
+      default:
+        return plain(node.children, [...way, node.key]);
     }
-    if (typeof valueForCheck === 'string') {
-      return `'${valueForCheck}'`;
-    }
-    return `${valueForCheck}`;
-  };
-
-  const iter = (node, propPreviousLevel) => {
-    if (node.status === 'unchanged') {
-      return '';
-    }
-
-    if (!(_.has(node, 'children'))) {
-      if (node.status === 'deleted') {
-        return `Property '${propPreviousLevel.join('.')}' was removed`;
-      }
-
-      if (node.status === 'added') {
-        return `Property '${propPreviousLevel.join('.')}' was added with value: ${checkForObj(node.value)}`;
-      }
-
-      return `Property '${propPreviousLevel.join('.')}' was updated. From ${checkForObj(node.oldValue)} to ${checkForObj(node.newValue)}`;
-    }
-
-    return node.children.map((child) => {
-      const propForChild = propPreviousLevel.slice(0);
-      propForChild.push(child.key);
-
-      return iter(child, propForChild);
-    });
-  };
-
-  let result = tree.map((objFromFirstLvl) => {
-    const propFromFirstLvl = objFromFirstLvl.key;
-
-    return iter(objFromFirstLvl, [propFromFirstLvl]);
   });
-  result = _.flattenDeep(result);
-  return _.compact(result).join('\n');
+
+  return result.filter((line) => line != null).join('\n');
 };
 
 export default plain;
+
