@@ -24,18 +24,20 @@ const treeInStr = (nodes, depth = 1) => {
   const indents = createIndent(depth);
 
   const result = nodes.map((node) => {
+    const makeValue = valProcessing(node.value, depth + 2);
+
     switch (node.status) {
       case 'changed':
         return `${indents[0]}  ${node.key}: ${treeInStr(node.children, depth + 2)}`;
 
       case 'added':
-        return `${indents[0]}+ ${node.key}: ${valProcessing(node.value, depth + 2)}`;
+        return `${indents[0]}+ ${node.key}: ${makeValue}`;
 
       case 'deleted':
-        return `${indents[0]}- ${node.key}: ${valProcessing(node.value, depth + 2)}`;
+        return `${indents[0]}- ${node.key}: ${makeValue}`;
 
       case 'unchanged':
-        return `${indents[0]}  ${node.key}: ${valProcessing(node.value, depth + 2)}`;
+        return `${indents[0]}  ${node.key}: ${makeValue}`;
 
       case 'modified':
         return [
