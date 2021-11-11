@@ -1,72 +1,54 @@
-import _ from 'lodash';
+import isObject from '../objectOrNot.js';
+import createIndent from '../createIndent.js';
 
-const treeInStr = (tree) => {
-  const replacer = ' ';
-  const spacesCount = 1;
-  const indentForSymb = 2;
+const valProcessing = (val, depth) => {
+  if (!isObject(val)) {
+    return `${val}`;
+  }
 
-  const extractObj = (valLikeObj, extrDepth) => {
-    const extrSpacesCount = 1;
-    const extrIndent = replacer.repeat(extrDepth + extrSpacesCount);
-
-    const getKeyVal = Object.entries(valLikeObj);
-    const result = getKeyVal.map(([key, val]) => {
-      if (typeof val !== 'object') {
-        return `${extrIndent}${key}: ${val}`;
+  const indents = createIndent(depth);
+  const lines = Object
+    .entries(val)
+    .map(([key, value]) => {
+      if (!isObject(value)) {
+        return `${indents[0]}  ${key}: ${value}`;
       }
-      return `${extrIndent}${key}: ${['{', extractObj(val, extrDepth + 4), `${extrIndent}}`].join('\n')}`;
+
+      return `${indents[0]}  ${key}: ${valProcessing(value, depth + 2)}`;
     });
-    return result.join('\n');
-  };
 
-  const lines = tree.map((difference) => {
-    const iter = (currentObj, depth) => {
-      const currentIndent = replacer.repeat(depth + spacesCount);
-      const closeBrecket = replacer.repeat(depth + spacesCount + indentForSymb);
+  return ['{', ...lines, `${indents[1]}}`].join('\n');
+};
 
-      if (!(_.has(currentObj, 'children'))) {
-        if (currentObj.status === 'deleted') {
-          if (typeof currentObj.value !== 'object' || currentObj.value === null) {
-            return `${currentIndent}- ${currentObj.key}: ${currentObj.value}`;
-          }
-          return `${currentIndent}- ${currentObj.key}: ${['{', extractObj(currentObj.value, depth + 6), `${closeBrecket}}`].join('\n')}`;
-        }
+const treeInStr = (nodes, depth = 1) => {
+  const indents = createIndent(depth);
 
-        if (currentObj.status === 'added') {
-          // console.log(currentObj.value, depth);
-          if (typeof currentObj.value !== 'object' || currentObj.value === null) {
-            return `${currentIndent}+ ${currentObj.key}: ${currentObj.value}`;
-          }
-          return `${currentIndent}+ ${currentObj.key}: ${['{', extractObj(currentObj.value, depth + 6), `${closeBrecket}}`].join('\n')}`;
-        }
+  const result = nodes.map((node) => {
+    switch (node.status) {
+      case 'changed':
+        return `${indents[0]}  ${node.key}: ${treeInStr(node.children, depth + 2)}`;
 
-        if (currentObj.status === 'unchanged') {
-          if (typeof currentObj.value !== 'object' || currentObj.value === null) {
-            return `${currentIndent}  ${currentObj.key}: ${currentObj.value}`;
-          }
-          return `${currentIndent}  ${currentObj.key}: ${['{', extractObj(currentObj.value, depth + 6), `${closeBrecket}}`].join('\n')}`;
-        }
+      case 'added':
+        return `${indents[0]}+ ${node.key}: ${valProcessing(node.value, depth + 2)}`;
 
-        if (currentObj.status === 'modified') {
-          if (typeof currentObj.oldValue === 'object' && currentObj.oldValue !== null) {
-            if (typeof currentObj.newValue === 'object' && currentObj.newValue !== null) {
-              [`${currentIndent}- ${currentObj.key}: ${extractObj(currentObj.oldValue, depth + 6)}`,
-                `${currentIndent}+ ${currentObj.key}: ${extractObj(currentObj.newValue, depth + 6)}`].join('\n');
-            }
-            return [`${currentIndent}- ${currentObj.key}: {\n${extractObj(currentObj.oldValue, depth + 6)}\n${closeBrecket}}`, `${currentIndent}+ ${currentObj.key}: ${currentObj.newValue}`].join('\n');
-          }
-          if (typeof currentObj.newValue === 'object' && currentObj.newValue !== null) {
-            return [`${currentIndent}- ${currentObj.key}: ${currentObj.oldValue}`, `${currentIndent}+ ${currentObj.key}: {\n${extractObj(currentObj.newValue, depth + 6)}\n${closeBrecket}}`].join('\n');
-          }
-          return [`${currentIndent}- ${currentObj.key}: ${currentObj.oldValue}`,
-            `${currentIndent}+ ${currentObj.key}: ${currentObj.newValue}`].join('\n');
-        }
-      }
-      return `${currentIndent}  ${currentObj.key}: {\n${currentObj.children.map((child) => iter(child, depth + 4)).join('\n')}\n${closeBrecket}}`;
-    };
-    return iter(difference, 1);
+      case 'deleted':
+        return `${indents[0]}- ${node.key}: ${valProcessing(node.value, depth + 2)}`;
+
+      case 'unchanged':
+        return `${indents[0]}  ${node.key}: ${valProcessing(node.value, depth + 2)}`;
+
+      case 'modified':
+        return [
+          `${indents[0]}- ${node.key}: ${valProcessing(node.oldValue, depth + 2)}`,
+          `${indents[0]}+ ${node.key}: ${valProcessing(node.newValue, depth + 2)}`,
+        ].join('\n');
+
+      default:
+        return 'Error!';
+    }
   });
-  return ['{', ...lines, '}'].join('\n');
+
+  return ['{', ...result, `${indents[1]}}`].join('\n');
 };
 
 export default treeInStr;

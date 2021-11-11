@@ -29,7 +29,7 @@ const plain = (tree, way = []) => {
     }
   });
 
-  return result.filter((line) => line != null).join('\n');
+  return result.filter((line) => line !== null).join('\n');
 };
 
 export default plain;

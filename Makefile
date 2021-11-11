@@ -8,7 +8,7 @@ addCommit:
 	git add --all
 
 lint:
-	npx eslint .
+	npx eslint --fix .
 
 test:
 	npx -n --experimental-vm-modules jest --watch
