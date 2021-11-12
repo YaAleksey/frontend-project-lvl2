@@ -24,8 +24,11 @@ const plain = (tree, way = []) => {
       case 'modified':
         return `Property '${currentWay}' was updated. From ${complexValOrNot(node.oldValue)} to ${complexValOrNot(node.newValue)}`;
 
-      default:
+      case 'changed':
         return plain(node.children, [...way, node.key]);
+
+      default:
+        return 'Error: unexpected status!';
     }
   });
 

@@ -6,32 +6,27 @@ import format from './formatters/formattersList.js';
 const genTree = (obj1, obj2) => {
   const uniqueKeys = _.sortBy(_.uniq([...Object.keys(obj1), ...Object.keys(obj2)]));
 
-  const counter = uniqueKeys.reduce((acc, key) => {
+  const counter = uniqueKeys.map((key) => {
     if (_.has(obj1, key) && _.has(obj2, key)) {
       if (obj1[key] === obj2[key]) {
-        acc.push({ key, value: obj1[key], status: 'unchanged' });
-        return acc;
+        return { key, value: obj1[key], status: 'unchanged' };
       }
       if (!(objectOrNot(obj1[key]) && (objectOrNot(obj2[key])))) {
-        acc.push({
+        return {
           key, oldValue: obj1[key], status: 'modified', newValue: obj2[key],
-        });
-        return acc;
+        };
       }
-      acc.push({
+      return {
         key, value: 'nested', status: 'changed', children: (genTree(obj1[key], obj2[key])),
-      });
-      return _.sortBy(acc, ['key']);
+      };
     }
 
     if (_.has(obj1, key)) {
-      acc.push({ key, value: obj1[key], status: 'deleted' });
-      return acc;
+      return { key, value: obj1[key], status: 'deleted' };
     }
 
-    acc.push({ key, value: obj2[key], status: 'added' });
-    return acc;
-  }, []);
+    return { key, value: obj2[key], status: 'added' };
+  });
 
   return counter;
 };

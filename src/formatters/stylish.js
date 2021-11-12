@@ -46,7 +46,7 @@ const treeInStr = (nodes, depth = 1) => {
         ].join('\n');
 
       default:
-        return 'Error!';
+        return 'Error: unexpected status!';
     }
   });
 
