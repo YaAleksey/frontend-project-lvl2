@@ -10,13 +10,13 @@ test('genDiff', () => {
   const checkJson = readFile('transfInJson.json').trim();
   const checkPlain = readFile('testPlain.json').trim();
 
-  expect(genDiff('file1WithChld.json', 'file2WithChld.json', 'plain')).toEqual(checkPlain);
-  expect(genDiff('file1WithChld.json', 'file2WithChld.json', 'json')).toEqual(checkJson);
-  expect(genDiff('file1WithChld.json', 'file2WithChld.json', 'stylish')).toEqual(file1VsFile2);
-  expect(genDiff('file1WithChld.yml', 'file2WithChld.yml', 'stylish')).toEqual(file1VsFile2);
-  expect(genDiff('file1WithChld.json', 'file1WithChld.yml', 'stylish')).toEqual(file1VsFile1);
-  expect(genDiff('file2WithChld.json', 'file2WithChld.yml', 'stylish')).toEqual(file2VsFile2);
-  expect(genDiff('file2WithChld.json', 'file1WithChld.yml', 'stylish')).toEqual(file2VsFile1);
-  expect(genDiff('file2WithChld.yml', 'file1WithChld.yml', 'stylish')).toEqual(file2VsFile1);
-  expect(genDiff('file2WithChld.json', 'file1WithChld.json', 'stylish')).toEqual(file2VsFile1);
+  expect(genDiff('file1.json', 'file2.json', 'plain')).toEqual(checkPlain);
+  expect(genDiff('file1.json', 'file2.json', 'json')).toEqual(checkJson);
+  expect(genDiff('file1.json', 'file2.json', 'stylish')).toEqual(file1VsFile2);
+  expect(genDiff('file1.yml', 'file2.yml', 'stylish')).toEqual(file1VsFile2);
+  expect(genDiff('file1.json', 'file1.yml', 'stylish')).toEqual(file1VsFile1);
+  expect(genDiff('file2.json', 'file2.yml', 'stylish')).toEqual(file2VsFile2);
+  expect(genDiff('file2.json', 'file1.yml', 'stylish')).toEqual(file2VsFile1);
+  expect(genDiff('file2.yml', 'file1.yml', 'stylish')).toEqual(file2VsFile1);
+  expect(genDiff('file2.json', 'file1.json', 'stylish')).toEqual(file2VsFile1);
 });
