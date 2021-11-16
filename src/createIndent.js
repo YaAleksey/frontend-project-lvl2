@@ -1,11 +1,11 @@
 export default (level) => {
-  const result = [];
+  const indents = [];
   const replacer = '  ';
   const spacesCount = 1;
   const indentSize = level * spacesCount;
 
-  result.push(replacer.repeat(indentSize));
-  result.push(replacer.repeat(indentSize - spacesCount));
+  indents.push(replacer.repeat(indentSize));
+  indents.push(replacer.repeat(indentSize - spacesCount));
 
-  return result;
+  return indents;
 };
