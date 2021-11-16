@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import objectOrNot from './objectOrNot.js';
 import parsingFile from './chooseParser.js';
-import format from './formatters/formattersList.js';
+import chooseFormat from './formatters/formattersList.js';
 
 const genTree = (obj1, obj2) => {
   const uniqueKeys = _.sortBy(_.uniq([...Object.keys(obj1), ...Object.keys(obj2)]));
@@ -36,7 +36,7 @@ const genDiff = (file1, file2, formatName) => {
   const secondObj = parsingFile(file2);
   const diff = genTree(firstObj, secondObj);
 
-  return format(formatName)(diff);
+  return chooseFormat(formatName)(diff);
 };
 
 export default genDiff;
