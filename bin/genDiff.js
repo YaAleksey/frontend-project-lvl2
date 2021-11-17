@@ -1,7 +1,6 @@
 #! /usr/bin/env node
 import pkg from 'commander';
-//import genDiff from '../src/index.js';
-import genDiff from '@hexlet/code';
+import genDiff from '../src/index.js';
 
 const { program } = pkg;
 

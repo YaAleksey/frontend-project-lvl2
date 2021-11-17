@@ -31,7 +31,7 @@ const genTree = (obj1, obj2) => {
   return comprasionInArr;
 };
 
-const genDiff = (file1, file2, formatName) => {
+const genDiff = (file1, file2, formatName = 'stylish') => {
   const firstObj = parsingFile(file1);
   const secondObj = parsingFile(file2);
   const diff = genTree(firstObj, secondObj);
