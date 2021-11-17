@@ -11,7 +11,7 @@ program
   .arguments('<first> <second>')
 
   .action((first, second) => {
-    const diff = genDiff(first, second, program.format);
+    const diff = genDiff(first, second, program.format = 'stylish');
     console.log(diff);
   });
 

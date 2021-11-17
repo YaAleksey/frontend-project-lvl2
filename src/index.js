@@ -36,9 +36,8 @@ const genDiff = (file1, file2, formatName) => {
   const secondObj = parsingFile(file2);
   const diff = genTree(firstObj, secondObj);
   const chooseFormat = formats(formatName);
-  const result = chooseFormat(diff);
 
-  return result;
+  return chooseFormat(diff);
 };
 
 export default genDiff;
