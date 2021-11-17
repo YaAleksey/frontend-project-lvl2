@@ -4,8 +4,8 @@ export default (level) => {
   const spacesCount = 1;
   const indentSize = level * spacesCount;
 
-  indents.push(replacer.repeat(indentSize));
-  indents.push(replacer.repeat(indentSize - spacesCount));
+  indents[0] = replacer.repeat(indentSize);
+  indents[1] = replacer.repeat(indentSize - spacesCount);
 
   return indents;
 };
