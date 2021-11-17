@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "the project number 2 from Hexlet",
   "bin": {
-    "genDiff": "bin/genDiff.js"
+    "gendiff": "bin/genDiff.js"
   },
   "type": "module",
   "jest": {
