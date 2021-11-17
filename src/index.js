@@ -31,13 +31,16 @@ const genTree = (obj1, obj2) => {
   return comprasionInArr;
 };
 
+const render = (diff, formatName) => formats(formatName)(diff);
+
 const genDiff = (file1, file2, formatName) => {
   const firstObj = parsingFile(file1);
   const secondObj = parsingFile(file2);
   const diff = genTree(firstObj, secondObj);
-  const chooseFormat = formats(formatName);
+//  const chooseFormat = formats(formatName);
 
-  return chooseFormat(diff);
+//  return chooseFormat(diff);
+  return render(diff, formatName);
 };
 
 export default genDiff;
