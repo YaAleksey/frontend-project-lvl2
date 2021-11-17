@@ -15,4 +15,4 @@ program
     console.log(diff);
   });
 
-program.parse();
+program.parse(process.argv);
