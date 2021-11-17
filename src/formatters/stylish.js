@@ -11,13 +11,13 @@ const valProcessing = (val, depth) => {
     .entries(val)
     .map(([key, value]) => {
       if (!isObject(value)) {
-        return `${indents[0]}  ${key}: ${value}`;
+        return `${indents.openBracket}  ${key}: ${value}`;
       }
 
-      return `${indents[0]}  ${key}: ${valProcessing(value, depth + 2)}`;
+      return `${indents.openBracket}  ${key}: ${valProcessing(value, depth + 2)}`;
     });
 
-  return ['{', ...lines, `${indents[1]}}`].join('\n');
+  return ['{', ...lines, `${indents.closeBracket}}`].join('\n');
 };
 
 const treeInStr = (nodes, depth = 1) => {
@@ -28,21 +28,21 @@ const treeInStr = (nodes, depth = 1) => {
 
     switch (node.status) {
       case 'changed':
-        return `${indents[0]}  ${node.key}: ${treeInStr(node.children, depth + 2)}`;
+        return `${indents.openBracket}  ${node.key}: ${treeInStr(node.children, depth + 2)}`;
 
       case 'added':
-        return `${indents[0]}+ ${node.key}: ${makeValue}`;
+        return `${indents.openBracket}+ ${node.key}: ${makeValue}`;
 
       case 'deleted':
-        return `${indents[0]}- ${node.key}: ${makeValue}`;
+        return `${indents.openBracket}- ${node.key}: ${makeValue}`;
 
       case 'unchanged':
-        return `${indents[0]}  ${node.key}: ${makeValue}`;
+        return `${indents.openBracket}  ${node.key}: ${makeValue}`;
 
       case 'modified':
         return [
-          `${indents[0]}- ${node.key}: ${valProcessing(node.oldValue, depth + 2)}`,
-          `${indents[0]}+ ${node.key}: ${valProcessing(node.newValue, depth + 2)}`,
+          `${indents.openBracket}- ${node.key}: ${valProcessing(node.oldValue, depth + 2)}`,
+          `${indents.openBracket}+ ${node.key}: ${valProcessing(node.newValue, depth + 2)}`,
         ].join('\n');
 
       default:
@@ -50,7 +50,7 @@ const treeInStr = (nodes, depth = 1) => {
     }
   });
 
-  return ['{', ...result, `${indents[1]}}`].join('\n');
+  return ['{', ...result, `${indents.closeBracket}}`].join('\n');
 };
 
 export default treeInStr;
