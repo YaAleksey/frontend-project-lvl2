@@ -1,8 +1,20 @@
-import isObject from '../objectOrNot.js';
-import createIndent from '../createIndent.js';
+import _ from 'lodash';
 
-const valProcessing = (val, depth) => {
-  if (!isObject(val)) {
+const createIndent = (level) => {
+  const replacer = '  ';
+  const spacesCount = 1;
+  const indentSize = level * spacesCount;
+
+  const indents = {
+    openBracket: replacer.repeat(indentSize),
+    closeBracket: replacer.repeat(indentSize - spacesCount),
+  };
+
+  return indents;
+};
+
+const extractValue = (val, depth) => {
+  if (!_.isObject(val)) {
     return `${val}`;
   }
 
@@ -10,25 +22,25 @@ const valProcessing = (val, depth) => {
   const lines = Object
     .entries(val)
     .map(([key, value]) => {
-      if (!isObject(value)) {
+      if (!_.isObject(value)) {
         return `${indents.openBracket}  ${key}: ${value}`;
       }
 
-      return `${indents.openBracket}  ${key}: ${valProcessing(value, depth + 2)}`;
+      return `${indents.openBracket}  ${key}: ${extractValue(value, depth + 2)}`;
     });
 
   return ['{', ...lines, `${indents.closeBracket}}`].join('\n');
 };
 
-const treeInStr = (nodes, depth = 1) => {
+const makeStylishOutput = (nodes, depth = 1) => {
   const indents = createIndent(depth);
 
   const result = nodes.map((node) => {
-    const makeValue = valProcessing(node.value, depth + 2);
+    const makeValue = extractValue(node.value, depth + 2);
 
     switch (node.status) {
       case 'changed':
-        return `${indents.openBracket}  ${node.key}: ${treeInStr(node.children, depth + 2)}`;
+        return `${indents.openBracket}  ${node.key}: ${makeStylishOutput(node.children, depth + 2)}`;
 
       case 'added':
         return `${indents.openBracket}+ ${node.key}: ${makeValue}`;
@@ -41,8 +53,8 @@ const treeInStr = (nodes, depth = 1) => {
 
       case 'modified':
         return [
-          `${indents.openBracket}- ${node.key}: ${valProcessing(node.oldValue, depth + 2)}`,
-          `${indents.openBracket}+ ${node.key}: ${valProcessing(node.newValue, depth + 2)}`,
+          `${indents.openBracket}- ${node.key}: ${extractValue(node.oldValue, depth + 2)}`,
+          `${indents.openBracket}+ ${node.key}: ${extractValue(node.newValue, depth + 2)}`,
         ].join('\n');
 
       default:
@@ -53,4 +65,4 @@ const treeInStr = (nodes, depth = 1) => {
   return ['{', ...result, `${indents.closeBracket}}`].join('\n');
 };
 
-export default treeInStr;
+export default makeStylishOutput;

@@ -1,10 +1,10 @@
-import objectOrNot from '../objectOrNot.js';
+import _ from 'lodash';
 
 const complexValOrNot = (val) => {
   if (typeof val === 'string') {
     return `'${val}'`;
   }
-  return objectOrNot(val) ? '[complex value]' : val;
+  return _.isObject(val) ? '[complex value]' : val;
 };
 
 const plain = (tree, way = []) => {
