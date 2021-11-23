@@ -7,7 +7,7 @@ publish:
 addCommit:
 	git add --all
 
-lint:
+lint: 
 	npx eslint --fix .
 
 test:

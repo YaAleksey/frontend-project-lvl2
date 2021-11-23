@@ -9,9 +9,6 @@ const parsingFile = (fileName) => {
     return yaml.load(readFile(fileName));
   }
 
-  if (format === '.json') {
-    return JSON.parse(readFile(fileName));
-  }
   return JSON.parse(readFile(fileName));
 };
 
