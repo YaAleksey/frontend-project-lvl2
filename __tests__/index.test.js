@@ -10,8 +10,7 @@ test('genDiff', () => {
   expect(genDiff('file1.json', 'file2.json', 'plain')).toEqual(checkPlain);
   expect(genDiff('file1.json', 'file2.json', 'json')).toEqual(checkJson);
 
-  expect(typeof (genDiff('file1.json', 'file2.json', 'json'))).toBe('string');
-  expect((JSON.parse(genDiff('file1.json', 'file2.json', 'json')))[2].key).toBe('group2');
+  expect(JSON.parse(genDiff('file1.json', 'file2.json', 'json'))).not.toBe(SyntaxError);
 
   expect(genDiff('file1.json', 'file2.json', 'stylish')).toEqual(file1VsFile2);
   expect(genDiff('file1.yml', 'file2.yml', 'stylish')).toEqual(file1VsFile2);
