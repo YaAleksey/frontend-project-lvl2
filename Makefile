@@ -11,7 +11,7 @@ lint:
 	npx eslint --fix .
 
 test:
-	npx -n --experimental-vm-modules jest --watch
+	npx -jest
 
 test-coverage:
 	npx -n --experimental-vm-modules jest --coverage --coverageProvider=v8
