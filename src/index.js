@@ -10,7 +10,7 @@ const genDiff = (file1, file2, formatName = 'stylish') => {
   const firstFile = parsingFile(file1, readFirst);
   const secondFile = parsingFile(file2, readSecond);
 
-  const diff = genTree(firstObj, secondObj);
+  const diff = genTree(firstFile, secondFile);
   const chooseFormat = formats(formatName);
 
   return chooseFormat(diff);
