@@ -4,7 +4,7 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/69eda943acfd9ac65f27/maintainability)](https://codeclimate.com/github/YaAleksey/frontend-project-lvl2/maintainability)
 
-[![checkCode](https://github.com/YaAleksey/frontend-project-lvl2/workflows/Node.js%20CI/badge.svg)](https://github.com/YaAleksey/frontend-project-lvl2/actions)
+[![checkCode](https://github.com/YaAleksey/frontend-project-lvl2/workflows/checkCode/badge.svg)](https://github.com/YaAleksey/frontend-project-lvl2/actions)
 
 ## **Utility Help**
 [![asciicast](https://asciinema.org/a/tLCwF58jJl8HBSQljSTi14BG7.svg)](https://asciinema.org/a/tLCwF58jJl8HBSQljSTi14BG7)
